@@ -25,7 +25,7 @@ cd platform
 make buildPartial #>> ../logs/synth.log
 cd -
 
-/opt/hw_testing/tools/write_factory_bitstreams -z platform/Bitstreams/new_core_pblock_dutArea_dpr_partial.bit output/partial.bit
+/opt/hw_testing/tools/write_factory_bitstreams -z platform/Bitstreams/new_core_pblock_dutArea_dpr_partial.bit_full output/partial.bit
 
 echo "[INFO] Send partial bitstream to FPGA"
 python3 /opt/hw_testing/tools/remoteDPR.py output/partial.bit
