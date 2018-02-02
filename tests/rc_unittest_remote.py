@@ -16,8 +16,8 @@ class RCUnittestTestCase(TestCase):
     def __init__(self, *args, **kwargs):
         super(RCUnittestTestCase, self).__init__(*args, **kwargs)
         self._hw_addr = 0x41000000
-        self._ignoreInputTicks = 0x0001
-        self._ignoreOutputTicks = 0x0001
+        self._skipInputTicks = 0x0001
+        self._skipOutputTicks = 0x0001
         self._enableCycles = 0x00001000
         self._clockRate = 0
         self._testingFUBlock=0
@@ -25,8 +25,8 @@ class RCUnittestTestCase(TestCase):
 
 
     def _unittest_Reset(self):
-        self._ignoreInputTicks = 0x0001
-        self._ignoreOutputTicks = 0x0001
+        self._skipInputTicks = 0x0001
+        self._skipOutputTicks = 0x0001
         self._hw_addr = 0x41000000
         self._enableCycles = 0x00001000
         self._clockRate = 0
@@ -42,8 +42,8 @@ class RCUnittestTestCase(TestCase):
     def CONFIGURE_FU_BLOCKS_AS_DUT(self, initialFUBlock, endFUBlock):
         self._testingFUBlock = endFUBlock
         if(initialFUBlock <= endFUBlock and initialFUBlock != 0):
-            self._ignoreInputTicks = initialFUBlock
-            self._ignoreOutputTicks = endFUBlock
+            self._skipInputTicks = initialFUBlock
+            self._skipOutputTicks = endFUBlock
         else:
             self._testingFUBlock = 0
             print ("[CRITICAL ERROR] FU-Block testing is not allowed")
@@ -53,11 +53,11 @@ class RCUnittestTestCase(TestCase):
     def CONFIGURE_FU_BLOCK_AS_DUT(self, fu_block):
         self._testingFUBlock = fu_block
         if fu_block == 0:
-            self._ignoreInputTicks = 0x0001
-            self._ignoreOutputTicks = 0x0001
+            self._skipInputTicks = 0x0001
+            self._skipOutputTicks = 0x0001
         else:        
-            self._ignoreInputTicks = fu_block
-            self._ignoreOutputTicks = fu_block
+            self._skipInputTicks = fu_block
+            self._skipOutputTicks = fu_block
           
 
     def CONFIGURE_ENABLE_CYCLES(self, n):
@@ -72,19 +72,19 @@ class RCUnittestTestCase(TestCase):
             self._clockRate = 0
 
             
-    def CONFIGURE_IGNORE_INPUT(self, n):
+    def CONFIGURE_SKIP_INPUT(self, n):
         if self._testingFUBlock == 0:
-            self._ignoreInputTicks = n
+            self._skipInputTicks = n
         else:
-            print ("[CRITICAL ERROR] Ignore input not allowed when FU-Block testing is actived")
+            print ("[CRITICAL ERROR] Skip input not allowed when FU-Block testing is actived")
             raise 
         
           
-    def CONFIGURE_IGNORE_OUTPUT(self, n):
+    def CONFIGURE_SKIP_OUTPUT(self, n):
         if self._testingFUBlock == 0:
-            self._ignoreOutputTicks = n
+            self._skipOutputTicks = n
         else:
-            print ("[CRITICAL ERROR] Ignore input not allowed when FU-Block testing is actived")
+            print ("[CRITICAL ERROR] Skip input not allowed when FU-Block testing is actived")
             raise 
 
         
@@ -98,7 +98,7 @@ class RCUnittestTestCase(TestCase):
         _time_valid = 0
         din = []
         #print ("[INFO] Deprecated function version (supported until platform v4)")
-        din.extend(int_to_byte((self._ignoreInputTicks << 16) | self._ignoreOutputTicks))
+        din.extend(int_to_byte((self._skipInputTicks << 16) | self._skipOutputTicks))
         head,payload=sendMessage(self._hw_addr, 0x00010204, 0x00000001, din)
 
     def TEST_CONFIGURE(self):
@@ -109,7 +109,7 @@ class RCUnittestTestCase(TestCase):
         din = []
         #print ("[INFO] Deprecated function version (supported until platform v6)")
         din.extend(int_to_byte(self._enableCycles))
-        din.extend(int_to_byte((self._ignoreInputTicks << 16) | self._ignoreOutputTicks))
+        din.extend(int_to_byte((self._skipInputTicks << 16) | self._skipOutputTicks))
         head,payload=sendMessage(self._hw_addr, 0x00010204, 0x2, din)
 
       
@@ -120,7 +120,7 @@ class RCUnittestTestCase(TestCase):
         _time_valid = 0
         din = []
         din.extend(int_to_byte(self._enableCycles))
-        din.extend(int_to_byte((self._ignoreInputTicks << 16) | self._ignoreOutputTicks))
+        din.extend(int_to_byte((self._skipInputTicks << 16) | self._skipOutputTicks))
         din.extend(int_to_byte((self._clockRate << 24) | 0x000000))
         #din.extend(int_to_byte(0x01000000))
         head,payload=sendMessage(self._hw_addr, 0x00010204, 0x3, din)
